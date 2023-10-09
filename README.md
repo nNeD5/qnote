@@ -1,4 +1,4 @@
-# qnote --- quick notes
+# qnote — quick notes
 
 # What is it
 
