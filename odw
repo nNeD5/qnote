@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+
+
+year=$(date +%Y)
+month=$(date +%m)
+day=$(date +%e | tr -d " ")
+week=$(( (($day  - 1) / 7) + 1 ))
+
+dairy_dir="$HOME/Notes/dairy/$year/$month/$week"
+mkdir -p "$dairy_dir"
+
+week_file="$dairy_dir/week_index.md"
+echo "$week_file"
+touch "$week_file"
+
+
+sed -i "/# Daily notes/,/# Week note/d" "$week_file"
+
+daily_notes="# Daily notes\n\n"
+for f in $(ls $dairy_dir)
+do
+  [ "$f" == "week_index.md" ] && continue
+  daily_notes="$daily_notes- [$f]($f)\n"
+done
+daily_notes="$daily_notes\n# Week note"
+
+printf "$daily_notes
+$(cat $week_file)" > "$week_file"
+
+$EDITOR "$week_file"
