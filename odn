@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+
+DAIRY_DIR="$HOME/Notes/"
+
+$EDITOR $DAIRY_DIR/index.md
