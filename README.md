@@ -16,7 +16,7 @@ qnote will create `${DIARY_DIR}/{week}/{year-month-day}.md` and `${DIARY_DIR}/{w
 - `qnote next-day(nd)`: open/create tommorow note
 - `qnote next-week(nw)`: open/create next week note
 - `qnote list(l)`: list all notes. Ignore hidden direcotry
-- `qnote select(s)`: selet and open note. Ignore hidden direcotry. Actually search from `${DIARY_DIR}/../` ) (require [fzf](https://github.com/junegunn/fzf?tab=readme-ov-file#installation))
+- `qnote select(s)`: selet and open note. Ignore hidden direcotry. Actually search from `${DIARY_DIR}/../`. (require [fzf](https://github.com/junegunn/fzf?tab=readme-ov-file#installation))
 
 
 ## Configuration
