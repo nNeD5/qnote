@@ -1,0 +1,92 @@
+#!/usr/bin/bash
+
+# qnote - command line utility for note taking
+# Commands:
+# - `qnote today(t)`: open/create today note
+# - `qnote week(w)`: open/create current week note
+# - `qnote prev-day(pd)`: open/create yesterday note
+# - `qnote yesterday(y)`: alias to prev-day
+# - `qnote prev-week(pw)`: open/create previos week note
+# - `qnote next-day(nd)`: open/create tommorow note
+# - `qnote next-week(nw)`: open/create next week note
+# - `qnote list(l)`: list all notes
+# - `qnote select(s)`: selet and open note (require fzf)
+
+
+# ===== OPTIONS =====
+# trap 'echo Error at line:$LINENO' ERR # for debugging
+set -o nounset    # Exposes unset variables
+set -o errexit    # Used to exit upon error, avoiding cascading errors
+set -o pipefail   # Unveils hidden failures
+shopt -s failglob    # Non-matching globs throw errors
+# ===== END: OPTIONS =====
+
+
+# ===== ENVIROMENT =====
+EDITOR=${EDITOR:=vim}
+EDITOR=${EDITOR:=vim}
+DIARY_DIR=${DIARY_DIR:-"${HOME}/Notes/diary"}
+if [ ! -d "$DIARY_DIR" ]; then
+    printf "\033[1;31mERROR:\033[0m NOTES_DIR=\`%s\` is not a valid dir\n" "${DIARY_DIR}" >&2
+    exit 1
+fi
+cd "$DIARY_DIR"
+# ===== END: ENVIROMENT =====
+
+
+# ===== UTILITIES DEFAULT ARGS =====
+find_args=(-type f -not -path "*/.*" -name "*.md")
+fzf_args=(
+    --scheme="path"
+    --border --border-label=" Find Note "
+    --prompt="note: "
+    --pointer=">"
+    --color=current-fg:bold:white
+    --color=current-bg:-1
+    --color=label:bold:#FF935C
+    --color=border:#4893D7
+    --layout=reverse
+    --tmux="bottom,40%"
+)
+# ===== END: UTILITIES DEFAULT ARGS =====
+
+
+# ===== DATE FORMAT =====
+today=(+%Y/%W/%Y-%m-%d.md)
+week=(+%Y/%W/week-index.md)
+prev_day=(--date='-1 day' "${today[@]}")
+prev_week=(--date='-1 week' "${week[@]}")
+next_day=(--date='+1 day' "${today[@]}")
+next_week=(--date='+1 week' "${week[@]}")
+# ===== END: DATE FORMAT =====
+
+
+# ===== FUNCTIONS =====
+open() {
+    path="$(date "$@")"
+    mkdir -p "$(dirname "$path")"
+    touch "$path"
+    $EDITOR "$path"
+}
+
+list() { find . "${find_args[@]}"; }
+
+select_note() {
+    files=$(find .. "${find_args[@]}"  -print0  | xargs -0 -I{} realpath --relative-base="${DIARY_DIR}/.." "{}")
+    fzf "${fzf_args[@]}" <<< "$files" | xargs -I{} -r "$EDITOR" "${DIARY_DIR}/../{}";
+}
+# ===== END: FUNCTIONS =====
+
+
+# ===== INPUT =====
+case "$1" in
+    "today" | "t")                          open "${today[@]}" ;;
+    "week" | "w")                           open "${week[@]}" ;;
+    "prev-day" | "yesterday" | "y" | "pd")  open "${prev_day[@]}" ;;
+    "prev-week" | "pw")                     open "${prev_week[@]}" ;;
+    "next-day" | "tommmorow" | "nd")        open "${next_day[@]}" ;;
+    "next-week" | "nw")                     open "${next_week[@]}" ;;
+    "list" | "l")                           list | less -F ;;
+    "select" | "s")                         select_note ;;
+esac
+# ===== END: INPUT =====

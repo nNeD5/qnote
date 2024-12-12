@@ -1,24 +1,33 @@
-# qnote — quick notes
+# qnote - quick notes
 
-# What is it
+Command line utility for daily and weekly note taking.
 
-Two scripts:
+## Usage
 
-- odw open week notes
-- odd open daily notes
+qnote will create `${DIARY_DIR}/{week}/{year-month-day}.md` file structure to store nodes.
 
-Just my way to make notes.
+### Commands:
 
-Store notes like:
+- `qnote today(t)`: open/create today note
+- `qnote week(w)`: open/create current week note
+- `qnote prev-day(pd)`: open/create yesterday note
+- `qnote yesterday(y)`: alias to prev-day
+- `qnote prev-week(pw)`: open/create previos week note
+- `qnote next-day(nd)`: open/create tommorow note
+- `qnote next-week(nw)`: open/create next week note
+- `qnote list(l)`: list all notes. ignore hidden direcotry
+- `qnote select(s)`: selet and open note. Ignore hidden direcotry. And actually search from `${DIARY_DIR}/../` ) (require [fzf][https://github.com/junegunn/fzf?tab=readme-ov-file#installation])
 
-- ~/Note/{year}{month}{week}week_index.md 
-- ~/Note/{year}{month}{week}{day_of_the_month}.md
+## Configuration
 
-# Why
+Use enviroment variable `NOTES_DIR` to set where notes will be stored.
+Add next string to your .bashrc/.zshrc. Obviously any path can be provided.
+```sh
+$ export DIARY_DIR="${HOME}/Notes/diary"
+```
+By default `DIARY_DIR` set to `${HOME}/Notes/diary`
 
-Just try to use helix instead of neovim and it doesn't have any plugin that suit me.
+## TODO:
 
-# Warning
-
-It's just thing which I done for myself, so to some value is hardcoded.
-But it should very easy, to change them directly in code, as scripts really small.
+- [ ] Templates
+- [ ] synchronization whith [HabitNow][https://play.google.com/store/apps/details?id=com.habitnow&hl=en_US]
